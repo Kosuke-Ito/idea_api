@@ -1,18 +1,17 @@
 class IdeasController < ApplicationController
-  
   def index
     category = Category.find_by(name: params[:category_name])
 
-    render status: 422 and return if (params[:category_name] && !category)
-    
+    render status: 422 and return if params[:category_name] && !category
+
     ideas = if params[:category_name]
               category.ideas
             else
               Idea.all
             end
 
-    ideas = ideas.map{ |i| {id: i.id, category: i.category.name, body: i.body, created_at: i.created_at.to_i} }
-    render json: { data: ideas }, status: 201 
+    ideas = ideas.map { |i| { id: i.id, category: i.category.name, body: i.body, created_at: i.created_at.to_i } }
+    render json: { data: ideas }, status: 201
   end
 
   def create
@@ -28,8 +27,7 @@ class IdeasController < ApplicationController
 
   private
 
-    def idea_params
-      params.permit(:category_name, :body)
-    end
-  
+  def idea_params
+    params.permit(:category_name, :body)
+  end
 end
