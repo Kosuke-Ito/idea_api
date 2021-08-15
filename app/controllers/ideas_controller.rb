@@ -1,31 +1,26 @@
 class IdeasController < ApplicationController
   
   def index
-    ideas = Idea.select(:id, :categories_id, :body, :created_at)
+    category = Category.find_by(name: params[:category_name])
 
-    if params[:category_name].present?
-      category = Category.find_by(name: category_name)
-      if category.present?
-        ideas = ideas.includes(:categories).where(category: {name: params[:category_name]})
-      else
-        render status: 422
-      end
-    end
-    ideas = ideas.map{ |i| [{id: i.id, categories_id: i.categories_id, body:i.body, created_at: i.created_at.to_i}] }.flatten
+    render status: 422 and return if (params[:category_name] && !category)
+    
+    ideas = if params[:category_name]
+              category.ideas
+            else
+              Idea.all
+            end
 
+    ideas = ideas.map{ |i| {id: i.id, category: i.category.name, body: i.body, created_at: i.created_at.to_i} }
     render json: { data: ideas }, status: 201 
   end
 
   def create
-    category_name = idea_params[:category_name]
-    category = Category.find_by(name: category_name)
-    if category.blank?
-      category = Category.create(name: category_name)
-    end
-    idea = idea.new(body: idea_params[:body], categories_id: category.id)
+    category = Category.find_or_create_by(name: idea_params[:category_name])
+    idea = Idea.new(body: idea_params[:body], category: category)
 
     if idea.save
-      render json: idea, status: 200
+      render json: idea, status: 201
     else
       render json: idea.errors, status: 422
     end
@@ -33,8 +28,8 @@ class IdeasController < ApplicationController
 
   private
 
-  def idea_params
-    params.permit(:category_name, :body)
-  end
+    def idea_params
+      params.permit(:category_name, :body)
+    end
   
 end

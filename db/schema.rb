@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_13_073834) do
+ActiveRecord::Schema.define(version: 2021_08_15_032613) do
 
   create_table "categories", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
@@ -20,12 +20,12 @@ ActiveRecord::Schema.define(version: 2021_08_13_073834) do
   end
 
   create_table "ideas", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.bigint "categories_id", null: false
+    t.bigint "category_id", null: false
     t.text "body", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["categories_id"], name: "index_ideas_on_categories_id"
+    t.index ["category_id"], name: "index_ideas_on_category_id"
   end
 
-  add_foreign_key "ideas", "categories", column: "categories_id"
+  add_foreign_key "ideas", "categories"
 end
