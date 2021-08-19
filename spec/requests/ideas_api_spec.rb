@@ -5,8 +5,8 @@ describe 'Ideas API', type: :request do
   describe "get idea" do
 
     it "blank category_name" do
-      get ideas_path
-      expect(response).to  have_http_status(201)
+      get ideas_path, params: { category_name: nil }
+      expect(response).to  have_http_status(200)
     end
     
     context "presence params category_name" do
@@ -17,12 +17,12 @@ describe 'Ideas API', type: :request do
         get ideas_path, params: { category_name: category.name }
         data = JSON.parse(response.body)["data"]
         expect(data.size).to eq(2)
-        expect(response).to have_http_status(201)
+        expect(response).to have_http_status(200)
       end
       
       it "category_name blank in db" do
         FactoryBot.create(:idea)
-        get ideas_path, params: { category_name: 'DBにないカテゴリ名' }
+        get ideas_path, params: { category_name: '登録されていないカテゴリ名' }
         expect(response).to have_http_status(404)
       end
 
@@ -44,6 +44,7 @@ describe 'Ideas API', type: :request do
         expect{
           post ideas_path, params: { body: 'カテゴリも一緒に作られる', category_name: 'カテゴリー' }
         }.to change{ Category.all.size }.from(0).to(1)
+        expect(response).to have_http_status(201)
         expect(Idea.find_by(body: 'カテゴリも一緒に作られる')).to be_present
       end
 

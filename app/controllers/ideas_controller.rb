@@ -11,7 +11,7 @@ class IdeasController < ApplicationController
             end
 
     ideas = ideas.map { |i| { id: i.id, category: i.category.name, body: i.body, created_at: i.created_at.to_i } }
-    render json: { data: ideas }, status: 201
+    render json: { data: ideas }, status: 200
   end
 
   def create
