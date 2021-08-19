@@ -2,7 +2,7 @@ class IdeasController < ApplicationController
   def index
     category = Category.find_by(name: params[:category_name])
 
-    render status: 422 and return if params[:category_name] && !category
+    render status: 404 and return if params[:category_name] && !category
 
     ideas = if params[:category_name]
               category.ideas
