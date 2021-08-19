@@ -2,8 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Idea, type: :model do
   let(:category) { FactoryBot.create(:category) }
-  
-  # bodyがなければ無効
+
   it "is invalid without body" do
     idea = Idea.new(
       category_id: category.id,
@@ -13,7 +12,6 @@ RSpec.describe Idea, type: :model do
     expect(idea.errors[:body]).to include("can't be blank")
   end
 
-  # category_idがなければ無効
   it "is invalid without category_id" do
     idea = Idea.new(
       category_id: nil,
